@@ -1,0 +1,28 @@
+.mainLayout {
+  display: flex;
+  padding: 5px;
+  justify-content: space-between;
+  background-color: antiquewhite;
+}
+.mainLayout ul {
+  display: flex;
+}
+.mainLayout ul li {
+  padding: 20px;
+  display: flex;
+  font-weight: bold;
+  font-size: 22px;
+}
+.mainLayout ul li:hover {
+  text-decoration: underline;
+  color: brown;
+  cursor: pointer;
+}
+.mainLayout img {
+  width: 60px;
+  height: 60px;
+}
+.manageLogo {
+  display: flex;
+  align-items: center;
+}
