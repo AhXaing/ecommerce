@@ -1,11 +1,34 @@
+const db = require("../util/db");
+
 const getAllCategory = (req, res) => {
-  res.json({
-    list: "All Category.",
+  var sql = "SELECT * FROM tbl_category";
+  db.query(sql, (err, result) => {
+    if (!err) {
+      res.json({
+        data: result,
+      });
+    } else {
+      res.json({
+        message: err,
+        err: true,
+      });
+    }
   });
 };
 const getAllCategoryById = (req, res) => {
-  res.json({
-    list: "All Category By Id.",
+  var { id } = req.params;
+  var sql = "SELECT * FROM tbl_category WHERE category_id =?";
+  db.query(sql, [id], (error, result) => {
+    if (!error) {
+      res.json({
+        data: result,
+      });
+    } else {
+      res.json({
+        error: true,
+        message: error,
+      });
+    }
   });
 };
 const create = (req, res) => {

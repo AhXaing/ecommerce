@@ -1,10 +1,11 @@
 const categoryController = require("../controller/categoryController");
 const category = (app) => {
-  app.get("/category", categoryController.getAllCategory);
-  app.get("/category/:id", categoryController.getAllCategoryById);
-  app.post("/category", categoryController.create);
-  app.put("/category", categoryController.update);
-  app.delete("/category", categoryController.remove);
+  const route = "/api/category";
+  app.get(route, categoryController.getAllCategory);
+  app.get(`${route}/:id`, categoryController.getAllCategoryById);
+  app.post(route, categoryController.create);
+  app.put(`${route}/:id`, categoryController.update);
+  app.delete(route, categoryController.remove);
 };
 
 module.exports = category;
