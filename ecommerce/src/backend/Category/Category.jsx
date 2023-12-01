@@ -60,24 +60,51 @@ const Category = () => {
       parent_id: parentId,
       status: status,
     };
+    var url = server + "category";
+    var method = "post";
+
+    // case update
+    if (item.category_id != null) {
+      param.category_id = item.category_id; //mean that add new key "category_id" to param
+      method = "put";
+    }
+    // case creat
     axios({
-      url: server + "category",
-      method: "post",
+      url: url,
+      method: method,
       data: param,
     })
       .then((res) => {
         if (res) {
           getList();
+          clearDataForm();
         }
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
   const onHideModalForm = () => {
     setShowForm(false);
+    clearDataForm();
   };
   const onShowModalForm = () => {
+    setShowForm(true);
+    setItem({});
+    clearDataForm();
+  };
+  const clearDataForm = () => {
+    setName("");
+    setParentId("");
+    setStatus("");
+  };
+  const onClickBtnEdit = (item) => {
+    setItem(item);
+    // case update add data to fields
+    setName(item.name);
+    setParentId(item.parentId);
+    setStatus(item.status);
     setShowForm(true);
   };
   return (
@@ -119,7 +146,11 @@ const Category = () => {
                 <td>{item.status}</td>
                 <td>
                   <>
-                    <Button variant="primary" size="sm">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => onClickBtnEdit(item)}
+                    >
                       Edit
                     </Button>{" "}
                     <Button
@@ -167,13 +198,12 @@ const Category = () => {
         </Modal>
       </>
 
-      {/* Modal form creat new */}
+      {/* Modal form creat new & update */}
       <>
         <Modal
           show={showForm}
           onHide={onHideModalForm}
           backdrop="static"
-          keyboard={false}
           size="md"
           aria-labelledby="contained-modal-title-vcenter"
           centered
@@ -183,7 +213,7 @@ const Category = () => {
               <Card.Header
                 style={{ backgroundColor: "#28a745", color: "#ffffff" }}
               >
-                Form Create
+                {item.category_id == null ? " Form Create" : "Form Update"}
               </Card.Header>
               <Card.Body>
                 <Form>
@@ -240,7 +270,7 @@ const Category = () => {
               Cancel
             </Button>
             <Button size="sm" variant="success" onClick={onSave}>
-              Save
+              {item.category_id == null ? "Save" : "Update"}
             </Button>
           </Modal.Footer>
         </Modal>
