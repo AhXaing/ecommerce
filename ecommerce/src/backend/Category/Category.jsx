@@ -54,7 +54,7 @@ const Category = () => {
   };
 
   const onSave = () => {
-    onHideModalForm();
+    onHideModalForm(true);
     var param = {
       cate_name: name,
       parent_id: parentId,

@@ -2,7 +2,6 @@
   display: flex;
   padding: 5px;
   justify-content: space-between;
-  background-color: rgb(199, 198, 197);
 }
 .mainLayoutDashboard ul {
   display: flex;
@@ -19,8 +18,8 @@
   cursor: pointer;
 }
 .mainLayoutDashboard img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
 }
 .manageLogo {
   display: flex;

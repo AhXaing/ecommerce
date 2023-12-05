@@ -15,9 +15,10 @@ app.get("/", (req, res) => {
 });
 
 //
-require("./src/route/categoryRoute")(app, "/api/category");
 require("./src/route/productRoute")(app);
+require("./src/route/categoryRoute")(app, "/api/category");
 require("./src/route/employeeRoute")(app, "/api/employee");
+require("./src/route/customerRoute")(app, "/api/customer");
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");

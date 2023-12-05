@@ -13,7 +13,10 @@ import AboutBackend from "./backend/About/About";
 import ProductBackend from "./backend/Product/Product";
 import CategoryBackend from "./backend/Category/Category";
 import CustomerBackend from "./backend/Customer/Customer";
-import LoginBackend from "./backend/User/User";
+import LayoutDashboardLogin from "./component/backend/LayoutDashboardLogin";
+import LoginDashboard from "./backend/Login/LoginDashboard";
+import Register from "./backend/Register/Register";
+import Employee from "./backend/Employee/Employee";
 function App() {
   return (
     <BrowserRouter>
@@ -35,7 +38,12 @@ function App() {
           <Route path="product" element={<ProductBackend />} />
           <Route path="customer" element={<CustomerBackend />} />
           <Route path="category" element={<CategoryBackend />} />
-          <Route path="login" element={<LoginBackend />} />
+          <Route path="employee" element={<Employee />} />
+        </Route>
+
+        <Route path="/dashboard" element={<LayoutDashboardLogin />}>
+          <Route path="login" element={<LoginDashboard />} />
+          <Route path="register" element={<Register />} />
         </Route>
       </Routes>
     </BrowserRouter>
