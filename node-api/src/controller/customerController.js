@@ -214,6 +214,7 @@ const getAddressById = (req, res) => {
   });
 };
 const newAddress = (req, res) => {
+  db.beginTransaction();
   var { cus_id, province_id, firstname, lastname, phone, address_desc } =
     req.body;
   var message = {};
@@ -256,7 +257,9 @@ const newAddress = (req, res) => {
         error: true,
         message: err,
       });
+      db.commit();
     } else {
+      db.rollback();
       res.json({
         message: "Customer Details is Created.",
         data: result,

@@ -15,10 +15,14 @@ app.get("/", (req, res) => {
 });
 
 //
-require("./src/route/productRoute")(app);
+require("./src/route/productRoute")(app, "/api/product");
 require("./src/route/categoryRoute")(app, "/api/category");
 require("./src/route/employeeRoute")(app, "/api/employee");
 require("./src/route/customerRoute")(app, "/api/customer");
+require("./src/route/wishlistRoute")(app, "/api/wishlist");
+require("./src/route/methodPaymentRoute")(app, "/api/payment-method");
+require("./src/route/orderStatusRoute")(app, "/api/order-status");
+require("./src/route/cartRoute")(app, "/api/cart");
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");

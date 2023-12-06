@@ -1,0 +1,21 @@
+មានន័យថាបើសិនជាយើងលុបទិន្នន័យមេ កូនលុបដែរ
+ALTER TABLE tbl_customer_details ADD CONSTRAINT fk_customer
+FOREIGN KEY (cus_id) REFERENCES tbl_customer(cus_id)
+ON DELETE CASCADE;
+
+មានន័យថាមិនអាចលុបទិន្នន័យមេបានទេ បើសិនកូនកំពុងតែប្រើទិន្នន័យនោះ
+ALTER TABLE tbl_customer_details ADD CONSTRAINT fk_customer
+FOREIGN KEY (cus_id) REFERENCES tbl_customer(cus_id)
+ON DELETE RESTRICT;
+
+ALTER TABLE tbl_order ADD CONSTRAINT order_status_id
+FOREIGN KEY (order_status_id) REFERENCES tbl_order_status(order_status_id)
+ON DELETE RESTRICT;
+
+ALTER TABLE tbl_order ADD CONSTRAINT payment_methods_id
+FOREIGN KEY (payment_methods_id) REFERENCES tbl_payment_methods(payment_methods_id)
+ON DELETE RESTRICT;
+
+ALTER TABLE tbl_order ADD CONSTRAINT payment_methods_id
+FOREIGN KEY (payment_methods_id) REFERENCES tbl_payment_methods(payment_methods_id)
+ON DELETE RESTRICT;

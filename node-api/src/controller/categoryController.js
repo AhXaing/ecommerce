@@ -1,25 +1,15 @@
 const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/validate");
 
-const getAllCategory = (req, res) => {
-  var sql = "SELECT * FROM tbl_category";
-  db.query(sql, (err, result) => {
-    if (!err) {
-      res.json({
-        data: result,
-      });
-    } else {
-      res.json({
-        message: err,
-        err: true,
-      });
-    }
+const getAllCategory = async (req, res) => {
+  const list = await db.query("SELECT * FROM tbl_category");
+  res.json({
+    list: list,
   });
 };
 const getAllCategoryById = (req, res) => {
-  var { id } = req.params;
   var sql = "SELECT * FROM tbl_category WHERE category_id =?";
-  db.query(sql, [id], (error, result) => {
+  db.query(sql, [req.params.id], (error, result) => {
     if (!error) {
       res.json({
         data: result,

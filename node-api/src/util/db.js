@@ -1,12 +1,20 @@
 const mysql = require("mysql");
 const util = require("util");
 const db = mysql.createConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: 5306,
   password: "",
+  // port: 5306,
   database: "ecom_db",
 });
+
+db.connect((err) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+});
+
 // promis wrapper to enable async await with mysql
 db.query = util.promisify(db.query).bind(db);
 
