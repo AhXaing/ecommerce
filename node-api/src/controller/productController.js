@@ -1,7 +1,8 @@
 const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/validate");
+
 const getAllProduct = async (req, res) => {
-  const sql = "SELECT * FROMT tbl_product";
+  const sql = "SELECT * FROM tbl_product";
   const list = await db.query(sql);
   res.json({
     list: list,
@@ -9,12 +10,13 @@ const getAllProduct = async (req, res) => {
 };
 const getProductById = async (req, res) => {
   const { id } = req.params;
-  const sql = "SELECT * FROMT tbl_product WHERE pro_id=?";
+  const sql = "SELECT * FROM tbl_product WHERE pro_id=?";
   const list = await db.query(sql, [id]);
   res.json({
     list: list,
   });
 };
+
 const create = async (req, res) => {
   var { category_id, barcode, name, quantity, price, image, description } =
     req.body;
@@ -47,8 +49,8 @@ const create = async (req, res) => {
   var param = [category_id, barcode, name, quantity, price, image, description];
   var data = await db.query(sql, param);
   res.json({
-    list: data,
     message: "product is created.",
+    list: data,
   });
 };
 const update = async (req, res) => {

@@ -19,3 +19,28 @@ ON DELETE RESTRICT;
 ALTER TABLE tbl_order ADD CONSTRAINT payment_methods_id
 FOREIGN KEY (payment_methods_id) REFERENCES tbl_payment_methods(payment_methods_id)
 ON DELETE RESTRICT;
+
+"category_id" :"",
+"barcode" :"",
+"name" :"",
+"quantity" :"",
+"price" :"",
+"image" :"",
+"description" :""
+
+"cus_id" : "",
+"order_status_id" : "",
+"payment_methods_id" : "",
+"inv_num" : "",
+"order_total" : "",
+"firstname" : "",
+"lastname" : "",
+"phone" : "",
+"address_desc" : "",
+"comment" : ""
+
+for order
+"cus_id" : 6,
+    "cusd_id":7,
+    "payment_methods_id" : 1,
+    "comment" : ""

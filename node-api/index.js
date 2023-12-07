@@ -23,6 +23,7 @@ require("./src/route/wishlistRoute")(app, "/api/wishlist");
 require("./src/route/methodPaymentRoute")(app, "/api/payment-method");
 require("./src/route/orderStatusRoute")(app, "/api/order-status");
 require("./src/route/cartRoute")(app, "/api/cart");
+require("./src/route/orderRoute")(app, "/api/order");
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");

@@ -9,9 +9,9 @@ const getAllmethodPayment = async (req, res) => {
   });
 };
 const create = async (req, res) => {
-  var { name, code, other } = req.body;
-  var sql = "INSERT INTO tbl_payment_methods (name,code,other) VALUES (?,?,?)";
-  var param = [name, code, other];
+  var { name, code } = req.body;
+  var sql = "INSERT INTO tbl_payment_methods (name,code) VALUES (?,?)";
+  var param = [name, code];
   var data = await db.query(sql, param);
   res.json({
     message: "payment method is added.",
@@ -22,8 +22,8 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   var { name, code, other, payment_methods_id } = req.body;
   var sql =
-    "UPDATE tbl_payment_methods SET name=?,code=?,other=? WHERE payment_methods_id  =? ";
-  var param = [name, code, other, payment_methods_id];
+    "UPDATE tbl_payment_methods SET name=?,code=? WHERE payment_methods_id  =? ";
+  var param = [name, code, payment_methods_id];
   var data = await db.query(sql, param);
   res.json({
     message: "payment method is updated.",
