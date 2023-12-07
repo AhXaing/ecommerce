@@ -1,7 +1,7 @@
 const db = require("../util/db");
 const bcrypt = require("bcrypt");
 const { isEmptyOrNull } = require("../util/validate");
-
+const jwt = require("jsonwebtoken");
 const getCustomer = (req, res) => {
   var sql =
     "SELECT cus_id,firstname,lastname,gender,is_active,created_at FROM tbl_customer";
@@ -120,10 +120,67 @@ const create = (req, res) => {
               });
             }
           });
+        } else {
+          res.json({
+            error: true,
+            message: error2,
+          });
         }
       });
     }
   });
+};
+
+const login = async (req, res) => {
+  var { username, password } = req.body;
+  var message = {};
+  if (isEmptyOrNull(username)) {
+    message.username = "Please fill in username";
+  }
+  if (isEmptyOrNull(password)) {
+    message.password = "Please fill in password";
+  }
+  if (Object.keys(message).length > 0) {
+    res.json({
+      error: true,
+      message: message,
+    });
+    return false;
+  }
+  var user = await db.query("SELECT * FROM tbl_customer WHERE username=?", [
+    username,
+  ]);
+  if (user.length > 0) {
+    var passDb = user[0].password; //get password from db (sdfsd4565a!@34354)
+    var isCorrect = bcrypt.compareSync(password, passDb);
+    if (isCorrect) {
+      var user = user[0];
+      delete user.password; // delete columns password from obj user
+      const KEY_ACCESS_TOKEN = "$DFDSFERWeLEJR534534!@#5A%^945dfgdfgSDFSDe";
+
+      var access_token = jwt.sign({ data: { ...obj } }, KEY_ACCESS_TOKEN);
+
+      var obj = {
+        user: user,
+        role: [],
+        token: "", // generate token JWT
+      };
+      res.json({
+        ...obj,
+        access_token: access_token,
+      });
+    } else {
+      res.json({
+        message: "password incorrect!",
+        error: true,
+      });
+    }
+  } else {
+    res.json({
+      message: "Account doesn't have!, Please goto register.",
+      error: true,
+    });
+  }
 };
 
 const update = (req, res) => {
@@ -364,4 +421,5 @@ module.exports = {
   newAddress,
   updateAddress,
   removeAddress,
+  login,
 };

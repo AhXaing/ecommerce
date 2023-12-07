@@ -6,6 +6,9 @@ const customer = (app, base_route) => {
   app.put(base_route, customerController.update);
   app.delete(`${base_route}/:id`, customerController.remove);
 
+  // login
+  app.post(`${base_route}/auth/login`, customerController.login);
+
   //
   app.get(`${base_route}_address`, customerController.getAddress);
   app.get(`${base_route}_address/:id`, customerController.getAddressById);

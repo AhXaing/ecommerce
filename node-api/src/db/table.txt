@@ -44,3 +44,19 @@ for order
     "cusd_id":7,
     "payment_methods_id" : 1,
     "comment" : ""
+
+    {
+    "username" : "0969999247",
+    "password" : "12345"   
+}
+
+for run customer create
+"firstname": "sreychen",
+    "lastname": "yem",
+    "gender": "0",
+    "username": "081312003",
+    "password": "081312003",
+    "phone" : "081312003",
+    "province_id": "2",
+    "is_active" :1, 
+    "address_desc": "#BB49, St03 PP..."
