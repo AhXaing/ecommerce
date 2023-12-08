@@ -60,3 +60,15 @@ for run customer create
     "province_id": "2",
     "is_active" :1, 
     "address_desc": "#BB49, St03 PP..."
+
+table query role permission
+
+SELECT c.firstname,
+c.lastname,
+r.name as role_name,
+rp.permission_id,
+p.code
+FROM tbl_customer c INNER JOIN tbl_role r ON c.role_id = r.role_id
+INNER JOIN tbl_role_permission rp ON r.role_id = rp.role_id
+INNER JOIN tbl_permission p ON p.permission_id = rp.permission_id
+WHERE c.cus_id=10

@@ -1,6 +1,6 @@
 const db = require("../util/db");
 const bcrypt = require("bcrypt");
-const { isEmptyOrNull } = require("../util/validate");
+const { isEmptyOrNull, TOKEN_KEY } = require("../util/validate");
 const jwt = require("jsonwebtoken");
 const getCustomer = (req, res) => {
   var sql =
@@ -63,7 +63,7 @@ const create = (req, res) => {
     message.password = "password is required.";
   }
   if (isEmptyOrNull(province_id)) {
-    message.province_id = "provinc is required.";
+    message.province_id = "provincc is required.";
   }
   if (Object.keys(message).length > 0) {
     res.json({
@@ -131,6 +131,19 @@ const create = (req, res) => {
   });
 };
 
+const getPermissionByCustomer = async (cus_id) => {
+  var sql =
+    "SELECT" +
+    " p.code" +
+    " FROM tbl_customer c INNER JOIN tbl_role r ON c.role_id = r.role_id" +
+    " INNER JOIN tbl_role_permission rp ON r.role_id = rp.role_id" +
+    " INNER JOIN tbl_permission p ON p.permission_id = rp.permission_id" +
+    " WHERE c.cus_id=?";
+
+  var list = await db.query(sql, [cus_id]);
+  return list;
+};
+
 const login = async (req, res) => {
   var { username, password } = req.body;
   var message = {};
@@ -145,26 +158,29 @@ const login = async (req, res) => {
       error: true,
       message: message,
     });
-    return false;
+    return;
   }
   var user = await db.query("SELECT * FROM tbl_customer WHERE username=?", [
     username,
   ]);
+
   if (user.length > 0) {
     var passDb = user[0].password; //get password from db (sdfsd4565a!@34354)
     var isCorrect = bcrypt.compareSync(password, passDb);
     if (isCorrect) {
       var user = user[0];
       delete user.password; // delete columns password from obj user
-      const KEY_ACCESS_TOKEN = "$DFDSFERWeLEJR534534!@#5A%^945dfgdfgSDFSDe";
-
-      var access_token = jwt.sign({ data: { ...obj } }, KEY_ACCESS_TOKEN);
-
+      var permission = await getPermissionByCustomer(user.cus_id);
       var obj = {
         user: user,
-        role: [],
+        permission: permission,
         token: "", // generate token JWT
       };
+      var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
+        expiresIn: "30s",
+      });
+      // var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY,{expiresIn:"30s"});
+      var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);
       res.json({
         ...obj,
         access_token: access_token,
