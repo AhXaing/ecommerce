@@ -131,19 +131,6 @@ const create = (req, res) => {
   });
 };
 
-const getPermissionByCustomer = async (cus_id) => {
-  var sql =
-    "SELECT" +
-    " p.code" +
-    " FROM tbl_customer c INNER JOIN tbl_role r ON c.role_id = r.role_id" +
-    " INNER JOIN tbl_role_permission rp ON r.role_id = rp.role_id" +
-    " INNER JOIN tbl_permission p ON p.permission_id = rp.permission_id" +
-    " WHERE c.cus_id=?";
-
-  var list = await db.query(sql, [cus_id]);
-  return list;
-};
-
 const login = async (req, res) => {
   var { username, password } = req.body;
   var message = {};
@@ -170,14 +157,14 @@ const login = async (req, res) => {
     if (isCorrect) {
       var user = user[0];
       delete user.password; // delete columns password from obj user
-      var permission = await getPermissionByCustomer(user.cus_id);
+      // var permission = await getPermissionByCustomer(user.cus_id);
       var obj = {
         user: user,
-        permission: permission,
+        permission: [],
         token: "", // generate token JWT
       };
       var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
-        expiresIn: "30s",
+        expiresIn: "1h",
       });
       // var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY,{expiresIn:"30s"});
       var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);

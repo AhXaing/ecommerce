@@ -1,5 +1,9 @@
 const db = require("../util/db");
-const { isEmptyOrNull } = require("../util/validate");
+const { isEmptyOrNull, TOKEN_KEY } = require("../util/validate");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { getPermissionByUser } = require("./AuthController");
+
 const getAllEmployee = (req, res) => {
   var sql = "SELECT * FROM tbl_employee";
   db.query(sql, (err, result) => {
@@ -34,7 +38,7 @@ const create = (req, res) => {
   const {
     emp_firstname,
     emp_lastname,
-    phone,
+    username,
     email,
     salary,
     address,
@@ -164,10 +168,103 @@ const remove = (req, res) => {
   });
 };
 
+const setPassword = async (req, res) => {
+  const { username, password } = req.body;
+  var message = {};
+  if (isEmptyOrNull(username)) {
+    message.username = "username is required.";
+  }
+  if (isEmptyOrNull(password)) {
+    message.password = "password is required.";
+  }
+  if (Object.keys(message).length > 0) {
+    res.json({
+      message: message,
+    });
+    return false;
+  }
+
+  var employee = await db.query("SELECT * FROM tbl_employee WHERE phone=?", [
+    username,
+  ]);
+
+  if (employee.length > 0) {
+    var passwordGenerate = bcrypt.hashSync(password, 10);
+    var update = await db.query(
+      "UPDATE tbl_employee SET password=? WHERE phone=?",
+      [passwordGenerate, username]
+    );
+    res.json({
+      message: "password is updated",
+      list: update,
+    });
+  } else {
+    res.json({
+      message: "invalide password",
+      error: true,
+    });
+  }
+};
+const login = async (req, res) => {
+  var { username, password } = req.body;
+  var message = {};
+  if (isEmptyOrNull(username)) {
+    message.username = "Please fill in username";
+  }
+  if (isEmptyOrNull(password)) {
+    message.password = "Please fill in password";
+  }
+  if (Object.keys(message).length > 0) {
+    res.json({
+      error: true,
+      message: message,
+    });
+    return;
+  }
+  var user = await db.query("SELECT * FROM tbl_employee WHERE phone=?", [
+    username,
+  ]);
+
+  if (user.length > 0) {
+    var passDb = user[0].password; //get password from db (sdfsd4565a!@34354)
+    var isCorrect = bcrypt.compareSync(password, passDb);
+    if (isCorrect) {
+      var user = user[0];
+      delete user.password; // delete columns password from obj user
+      var permission = await getPermissionByUser(user.emp_id);
+      var obj = {
+        user: user,
+        permission: permission,
+      };
+      var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
+        expiresIn: "1h",
+      });
+      // var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY,{expiresIn:"30s"});
+      var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);
+      res.json({
+        ...obj,
+        access_token: access_token,
+      });
+    } else {
+      res.json({
+        message: "password incorrect!",
+        error: true,
+      });
+    }
+  } else {
+    res.json({
+      message: "Account doesn't have!, Please goto register.",
+      error: true,
+    });
+  }
+};
+
 module.exports = {
   getAllEmployee,
   getEmployeeById,
   create,
   update,
   remove,
+  setPassword,
+  login,
 };
