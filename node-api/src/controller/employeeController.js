@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 const { getPermissionByUser } = require("./AuthController");
 
 const getAllEmployee = (req, res) => {
-  var sql = "SELECT * FROM tbl_employee";
+  var sql =
+    "SELECT emp_firstname,emp_lastname,phone,email,salary,address,province,country,created_at FROM tbl_employee";
   db.query(sql, (err, result) => {
     if (err) {
       res.json({
@@ -14,6 +15,7 @@ const getAllEmployee = (req, res) => {
     } else {
       res.json({
         list: result,
+        message: err,
       });
     }
   });
@@ -237,13 +239,14 @@ const login = async (req, res) => {
         permission: permission,
       };
       var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
-        expiresIn: "1h",
+        expiresIn: "2h",
       });
-      // var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY,{expiresIn:"30s"});
-      var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);
+      var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);
+
       res.json({
         ...obj,
         access_token: access_token,
+        refresh_token: refresh_token,
       });
     } else {
       res.json({

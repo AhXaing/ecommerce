@@ -12,7 +12,8 @@ import {
   FilePptOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Button, Dropdown, Form, Input } from "antd";
+import { Layout, Menu, theme, Button, Dropdown } from "antd";
+import { getUser } from "../../share/helper";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -54,11 +55,11 @@ const LayoutDashboard = () => {
     if (isLogin == "0") {
       navigate("/dashboard/login");
     }
-  }, []);
+  });
 
   const handleLogout = () => {
     localStorage.setItem("isLogin", "0");
-    window.location.href("/dashboard/login");
+    window.location.href = "/dashboard/login";
   };
   const itemsProfile = [
     {
@@ -74,6 +75,7 @@ const LayoutDashboard = () => {
       label: <a onClick={handleLogout}>Log Out</a>,
     },
   ];
+  const user = getUser();
   return (
     <Layout
       style={{
@@ -114,7 +116,7 @@ const LayoutDashboard = () => {
                 }}
                 placement="bottomRight"
               >
-                <Button>bottomRight</Button>
+                <Button>{user.emp_firstname + " " + user.emp_lastname}</Button>
               </Dropdown>
             </div>
           </div>

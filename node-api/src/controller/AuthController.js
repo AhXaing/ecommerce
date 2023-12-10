@@ -63,15 +63,20 @@ exports.userGuard = (parameter) => {
         if (!error) {
           // check is has permission
           var permission = result.data.permission;
-          if (permission.includes(parameter)) {
-            (req.user = result.data), (req.user_id = result.data.user.cus_id);
+          req.user = result.data;
+          req.user_id = result.data.user.cus_id;
+          if (permission == null) {
             next();
+          } else if (permission.includes(parameter)) {
+            next();
+          } else {
+            res.status(401).send({
+              message: "No Permission.",
+            });
           }
-          res.status(401).send({
-            message: "No Permission.",
-          });
         } else {
-          res.json({
+          res.status(401).send({
+            error: true,
             message: error,
           });
         }

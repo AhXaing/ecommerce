@@ -11,6 +11,7 @@ import {
   Col,
   FloatingLabel,
 } from "react-bootstrap";
+import { request } from "../../share/request";
 
 const Employee = () => {
   useEffect(() => {
@@ -28,17 +29,11 @@ const Employee = () => {
   const [country, setcountry] = useState("");
   const [province, setprovince] = useState("");
   const [address, setaddress] = useState("");
-
   const server = "http://localhost:5000/api/";
   const getEmployee = () => {
-    axios({
-      url: server + "employee",
-      method: "get",
-      data: {},
-    })
+    request("employee", "GET")
       .then((res) => {
-        var data = res.data;
-        setList(data.list);
+        setList(res.list);
       })
       .catch((err) => {
         console.log(err);
