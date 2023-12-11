@@ -23,10 +23,10 @@ const getAllCategoryById = (req, res) => {
   });
 };
 const create = (req, res) => {
-  const { cate_name, parent_id, status } = req.body;
+  const { name, parent, status } = req.body;
   var message = {};
-  if (isEmptyOrNull(cate_name)) {
-    message.cate_name = "category name is required.";
+  if (isEmptyOrNull(name)) {
+    message.name = "category name is required.";
   }
   if (Object.keys(message).length > 0) {
     res.json({
@@ -36,9 +36,8 @@ const create = (req, res) => {
     return;
   }
 
-  var sql =
-    "INSERT INTO tbl_category(cate_name,parent_id,status) VALUES (?,?,?)";
-  var params_sql = [cate_name, parent_id, status];
+  var sql = "INSERT INTO tbl_category(name,parent,status) VALUES (?,?,?)";
+  var params_sql = [name, parent, status];
   db.query(sql, params_sql, (error, result) => {
     if (!error) {
       res.json({
@@ -56,10 +55,10 @@ const create = (req, res) => {
   });
 };
 const update = (req, res) => {
-  const { cate_name, parent_id, status, category_id } = req.body;
+  const { name, parent, status, category_id } = req.body;
   var message = {};
-  if (isEmptyOrNull(cate_name)) {
-    message.cate_name = "category name is required.";
+  if (isEmptyOrNull(name)) {
+    message.name = "category name is required.";
   }
   if (Object.keys(message).length > 0) {
     res.json({
@@ -69,8 +68,8 @@ const update = (req, res) => {
     return;
   }
   var sql =
-    "UPDATE tbl_category SET cate_name=?, parent_id=?, status=? WHERE category_id =?";
-  var params_sql = [cate_name, parent_id, status, category_id];
+    "UPDATE tbl_category SET name=?, parent=?, status=? WHERE category_id =?";
+  var params_sql = [name, parent, status, category_id];
   db.query(sql, params_sql, (error, result) => {
     if (!error) {
       res.json({

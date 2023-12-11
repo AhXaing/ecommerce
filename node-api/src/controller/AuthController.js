@@ -2,6 +2,48 @@ const { TOKEN_KEY } = require("../util/validate");
 const jwt = require("jsonwebtoken");
 const db = require("../util/db");
 
+exports.userGuard = (parameter) => {
+  return (req, res, next) => {
+    var authorization = req.headers.authorization;
+    var token_from_client = null;
+    if (authorization != null && authorization != "") {
+      token_from_client = authorization.split(" ")[1];
+    }
+
+    if (token_from_client == null) {
+      res.status(401).send({
+        message: "Unauthorized (401).",
+      });
+    } else {
+      jwt.verify(token_from_client, TOKEN_KEY, (error, result) => {
+        if (error) {
+          res.status(401).send({
+            error: error,
+            message: "Unauthorization!",
+          });
+        } else {
+          // check is has permission
+          var permission = result.data.permission;
+          req.user = result.data;
+          req.user_id = result.data.user.emp_id;
+          if (parameter != null) {
+            next();
+          } else if (parameter == null) {
+            next();
+          } else if (permission.includes(parameter)) {
+            next();
+          } else {
+            res.status(401).send({
+              error: true,
+              message: "No Permission!",
+            });
+          }
+        }
+      });
+    }
+  };
+};
+
 exports.userGuard_V1 = (req, res, next) => {
   var authorization = req.headers.authorization;
   var token_from_client = null;
@@ -44,43 +86,4 @@ exports.getPermissionByUser = async (id) => {
     tmpArr.push(item.code);
   });
   return tmpArr;
-};
-
-exports.userGuard = (parameter) => {
-  return (req, res, next) => {
-    var authorization = req.headers.authorization;
-    var token_from_client = null;
-    if (authorization != null && authorization != "") {
-      token_from_client = authorization.split(" ")[1];
-    }
-
-    if (token_from_client == null) {
-      res.status(401).send({
-        message: "Unauthorized.",
-      });
-    } else {
-      jwt.verify(token_from_client, TOKEN_KEY, (error, result) => {
-        if (!error) {
-          // check is has permission
-          var permission = result.data.permission;
-          req.user = result.data;
-          req.user_id = result.data.user.cus_id;
-          if (permission == null) {
-            next();
-          } else if (permission.includes(parameter)) {
-            next();
-          } else {
-            res.status(401).send({
-              message: "No Permission.",
-            });
-          }
-        } else {
-          res.status(401).send({
-            error: true,
-            message: error,
-          });
-        }
-      });
-    }
-  };
 };

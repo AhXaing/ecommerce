@@ -1,5 +1,5 @@
 const db = require("../util/db");
-const { isEmptyOrNull, TOKEN_KEY } = require("../util/validate");
+const { isEmptyOrNull, TOKEN_KEY, REFRESH_KEY } = require("../util/validate");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { getPermissionByUser } = require("./AuthController");
@@ -241,7 +241,7 @@ const login = async (req, res) => {
       var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
         expiresIn: "2h",
       });
-      var refresh_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY);
+      var refresh_token = jwt.sign({ data: { ...obj } }, REFRESH_KEY);
 
       res.json({
         ...obj,
@@ -256,7 +256,7 @@ const login = async (req, res) => {
     }
   } else {
     res.json({
-      message: "Account doesn't have!, Please goto register.",
+      message: "Account doesn't have!, Please go to register.",
       error: true,
     });
   }

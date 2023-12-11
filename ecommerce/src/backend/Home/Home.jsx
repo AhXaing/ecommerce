@@ -1,5 +1,10 @@
+import { HomeDashboard } from "../chart/HomeDashboard";
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <HomeDashboard />
+    </div>
+  );
 };
 
 export default Home;

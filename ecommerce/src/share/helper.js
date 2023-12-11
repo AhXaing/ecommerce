@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const isEmptyOrNull = (vaule) => {
   return vaule == "" || vaule == null || vaule == undefined ? true : false;
 };
@@ -20,6 +22,19 @@ export const getPermission = () => {
     return null;
   }
 };
+
+export const isPermission = (code_permission) => {
+  const arrPermission = getPermission();
+  if (arrPermission) {
+    if (arrPermission.includes(code_permission)) {
+      return true; // have permission
+    }
+    return false; // no permission
+  } else {
+    return false; // no permission
+  }
+};
+
 export const getAccessToken = () => {
   var access_token = localStorage.getItem("access_token");
   if (!isEmptyOrNull(access_token)) {
@@ -32,9 +47,22 @@ export const getAccessToken = () => {
 export const getRefreshToken = () => {
   var refresh_token = localStorage.getItem("refresh_token");
   if (!isEmptyOrNull(refresh_token)) {
-    refresh_token = JSON.parse(refresh_token);
     return refresh_token;
   } else {
     return null;
   }
+};
+
+export const formatDateClient = (date) => {
+  if (!isEmptyOrNull(date)) {
+    return moment(date).format("DD/MM/YYYY");
+  }
+  return null;
+};
+
+export const formatDateServer = (date) => {
+  if (!isEmptyOrNull(date)) {
+    return moment(date).format("YYYY-MM-DD");
+  }
+  return null;
 };

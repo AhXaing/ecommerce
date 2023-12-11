@@ -4,13 +4,22 @@ import Logo from "../../assets/images/logo.png";
 import "./LayoutDashboard.css";
 import {
   DesktopOutlined,
-  ToolOutlined,
+  EditOutlined,
   DashboardOutlined,
   TeamOutlined,
   UserOutlined,
   QrcodeOutlined,
-  FilePptOutlined,
+  CopyOutlined,
   SolutionOutlined,
+  MenuUnfoldOutlined,
+  AlignLeftOutlined,
+  DiffOutlined,
+  SnippetsOutlined,
+  CalendarOutlined,
+  SettingOutlined,
+  TranslationOutlined,
+  ThunderboltOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme, Button, Dropdown } from "antd";
 import { getUser } from "../../share/helper";
@@ -25,20 +34,46 @@ function getItem(label, key, icon, children) {
 }
 const items = [
   getItem("Dashboard", "/dashboard", <DashboardOutlined />),
-  getItem("Category", "/dashboard/category", <QrcodeOutlined />),
-  getItem("Product", "/dashboard/product", <FilePptOutlined />),
   getItem("Customer", "/dashboard/customer", <SolutionOutlined />),
   getItem("Employee", "/dashboard/employee", <TeamOutlined />),
-  getItem("Report", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5", <DesktopOutlined />),
+  getItem("Order", "/dashboard/order", <CalendarOutlined />),
+
+  getItem("Product", "/dashboard/product", <MenuUnfoldOutlined />, [
+    getItem("Product", "/dashboard/product/product-list", <DiffOutlined />),
+    getItem("Category", "/dashboard/product/category", <AlignLeftOutlined />),
   ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
+
+  getItem("Report", "/dashboard/report", <CopyOutlined />, [
+    getItem("Top Sale", "/dashboard/report/top-sale", <EditOutlined />),
+    getItem(
+      "Sold By Customer",
+      "/dashboard/report/sold-by-customer",
+      <TeamOutlined />
+    ),
+    getItem(
+      "Sole By Product",
+      "/dashboard/report/sold-by-product",
+      <SnippetsOutlined />
+    ),
   ]),
-  getItem("Log out", "9", <ToolOutlined />),
+
+  getItem("System", "/dashboard/system", <SettingOutlined />, [
+    getItem(
+      "Order Payment",
+      "/dashboard/system/order-payment",
+      <QrcodeOutlined />
+    ),
+    getItem(
+      "Order Status",
+      "/dashboard/system/order-status",
+      <ThunderboltOutlined />
+    ),
+    getItem("Province", "/dashboard/system/province", <TranslationOutlined />),
+    getItem("Menu", "/dashboard/system/menu", <DesktopOutlined />),
+    getItem("Permission", "/dashboard/system/permission", <SolutionOutlined />),
+    getItem("Role", "/dashboard/system/role", <DesktopOutlined />),
+    getItem("User Role", "/dashboard/system/user-role", <UserAddOutlined />),
+  ]),
 ];
 
 const LayoutDashboard = () => {
