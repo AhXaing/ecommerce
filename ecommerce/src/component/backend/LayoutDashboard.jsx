@@ -7,7 +7,6 @@ import {
   EditOutlined,
   DashboardOutlined,
   TeamOutlined,
-  UserOutlined,
   QrcodeOutlined,
   CopyOutlined,
   SolutionOutlined,
