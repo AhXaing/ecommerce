@@ -13,6 +13,7 @@ const employee = (app, base_route) => {
 
     employeeController.setPassword
   );
+  app.post(`${base_route}/refresh-token`, employeeController.refreshToken);
   app.post(`${base_route}/login`, employeeController.login);
 };
 

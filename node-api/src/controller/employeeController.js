@@ -239,7 +239,7 @@ const login = async (req, res) => {
         permission: permission,
       };
       var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
-        expiresIn: "2h",
+        expiresIn: "60s",
       });
       var refresh_token = jwt.sign({ data: { ...obj } }, REFRESH_KEY);
 
@@ -262,6 +262,48 @@ const login = async (req, res) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  //check and verify refresh token from client
+  var { refresh_key } = req.body;
+  if (isEmptyOrNull(refresh_key)) {
+    res.status(401).send({
+      message: "Unauthorized! 1",
+    });
+  } else {
+    jwt.verify(refresh_key, REFRESH_KEY, async (error, result) => {
+      if (error) {
+        res.status(401).send({
+          message: "Unauthorized!",
+          error: error,
+        });
+      } else {
+        // សុំសិទ្ធិទាញយក access token ថ្មី
+        var username = result.data.user.phone;
+        var user = await db.query("SELECT * FROM tbl_employee WHERE phone=?", [
+          username,
+        ]);
+        var user = user[0];
+        delete user.password; // delete columns password from obj user
+        var permission = await getPermissionByUser(user.emp_id);
+        var obj = {
+          user: user,
+          permission: permission,
+        };
+        var access_token = jwt.sign({ data: { ...obj } }, TOKEN_KEY, {
+          expiresIn: "2h",
+        });
+        var refresh_token = jwt.sign({ data: { ...obj } }, REFRESH_KEY);
+
+        res.json({
+          ...obj,
+          access_token: access_token,
+          refresh_token: refresh_token,
+        });
+      }
+    });
+  }
+};
+
 module.exports = {
   getAllEmployee,
   getEmployeeById,
@@ -270,4 +312,5 @@ module.exports = {
   remove,
   setPassword,
   login,
+  refreshToken,
 };

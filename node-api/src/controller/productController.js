@@ -2,10 +2,13 @@ const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/validate");
 
 const getAllProduct = async (req, res) => {
-  const sql = "SELECT * FROM tbl_product";
+  const sql = "SELECT * FROM tbl_product ORDER BY pro_id DESC";
+  const sqlCategory = "SELECT * FROM tbl_category ORDER BY category_id DESC";
   const list = await db.query(sql);
+  const category = await db.query(sqlCategory);
   res.json({
     list: list,
+    list_category: category,
   });
 };
 const getProductById = async (req, res) => {

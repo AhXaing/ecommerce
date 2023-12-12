@@ -1,6 +1,7 @@
 import { Button, Form, Input, Card, message } from "antd";
 import { request } from "../../share/request";
 import { useState } from "react";
+import { storeEmployeeData } from "../../share/helper";
 const LoginDashboard = () => {
   const [loading, setLoading] = useState(false);
 
@@ -15,11 +16,12 @@ const LoginDashboard = () => {
       if (!res.error) {
         //login success
         // localStorage.setItem("key", "value");
-        localStorage.setItem("isLogin", "1");
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-        localStorage.setItem("permission", JSON.stringify(res.permission));
-        localStorage.setItem("user", JSON.stringify(res.user));
+        storeEmployeeData(res);
+        // localStorage.setItem("isLogin", "1");
+        // localStorage.setItem("access_token", res.access_token);
+        // localStorage.setItem("refresh_token", res.refresh_token);
+        // localStorage.setItem("permission", JSON.stringify(res.permission));
+        // localStorage.setItem("user", JSON.stringify(res.user));
         window.location.href = "/dashboard";
       } else {
         message.error(res.message);

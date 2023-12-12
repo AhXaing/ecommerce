@@ -4,7 +4,7 @@ const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
   password: "",
-  // port: 5306,
+  // port: 5306, defualt post 3306
   database: "ecom_db",
 });
 

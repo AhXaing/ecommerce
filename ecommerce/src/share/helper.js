@@ -66,3 +66,16 @@ export const formatDateServer = (date) => {
   }
   return null;
 };
+
+export const logout = () => {
+  localStorage.setItem("isLogin", "0");
+  window.location.href = "/dashboard/login";
+};
+
+export const storeEmployeeData = (param) => {
+  localStorage.setItem("isLogin", "1");
+  localStorage.setItem("access_token", param.access_token);
+  localStorage.setItem("refresh_token", param.refresh_token);
+  localStorage.setItem("permission", JSON.stringify(param.permission));
+  localStorage.setItem("user", JSON.stringify(param.user));
+};
