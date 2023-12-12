@@ -5,7 +5,7 @@ const product = (app, base_route) => {
   app.get(`${base_route}/:id`, userGuard(), productController.getProductById);
   app.post(base_route, userGuard(), productController.create);
   app.put(base_route, userGuard(), productController.update);
-  app.delete(`${base_route}/:id`, userGuard(), productController.remove);
+  app.delete(base_route, userGuard(), productController.remove);
   app.post(
     `${base_route}/change-status`,
     userGuard(),

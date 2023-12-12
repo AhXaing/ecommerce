@@ -2,7 +2,16 @@ const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/validate");
 
 const getAllProduct = async (req, res) => {
-  const sql = "SELECT * FROM tbl_product ORDER BY pro_id DESC";
+  const { categoryId } = req.query;
+  var select =
+    "SELECT p.*, c.name category_name FROM tbl_product p " +
+    " INNER JOIN tbl_category c ON (P.category_id = C.category_id) ";
+  var where = "";
+  if (!isEmptyOrNull(categoryId)) {
+    where += " WHERE p.category_id = " + categoryId;
+  }
+  var oderBy = " ORDER BY p.pro_id DESC";
+  var sql = select + where + oderBy;
   const sqlCategory = "SELECT * FROM tbl_category ORDER BY category_id DESC";
   const list = await db.query(sql);
   const category = await db.query(sqlCategory);
@@ -111,7 +120,7 @@ const update = async (req, res) => {
 };
 const remove = async (req, res) => {
   const { id } = req.body;
-  const sql = "DELETE * FROMT tbl_product WHERE pro_id=?";
+  const sql = "DELETE FROM tbl_product WHERE pro_id=?";
   const list = await db.query(sql, [id]);
   res.json({
     message: "product is deleted.",
