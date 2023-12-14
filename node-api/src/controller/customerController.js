@@ -2,17 +2,15 @@ const db = require("../util/db");
 const bcrypt = require("bcrypt");
 const { isEmptyOrNull, TOKEN_KEY } = require("../util/validate");
 const jwt = require("jsonwebtoken");
-const getCustomer = (req, res) => {
-  var sql =
+const getCustomer = async (req, res) => {
+  var sqlProvince = "SELECT * FROM tbl_province ";
+  var sqlCustomer =
     "SELECT cus_id,firstname,lastname,gender,is_active,created_at FROM tbl_customer";
-  db.query(sql, (err, result) => {
-    if (!err) {
-      res.json({
-        list: result,
-      });
-    } else {
-      message: err;
-    }
+  var list_customer = await db.query(sqlCustomer);
+  var list_province = await db.query(sqlProvince);
+  res.json({
+    list_customer: list_customer,
+    list_province: list_province,
   });
 };
 const getCustomerById = (req, res) => {

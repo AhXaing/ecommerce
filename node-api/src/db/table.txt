@@ -72,3 +72,7 @@ FROM tbl_customer c INNER JOIN tbl_role r ON c.role_id = r.role_id
 INNER JOIN tbl_role_permission rp ON r.role_id = rp.role_id
 INNER JOIN tbl_permission p ON p.permission_id = rp.permission_id
 WHERE c.cus_id=10
+
+search date
+
+SELECT * FROM `tbl_product` WHERE created_at >= '2023-12-07' AND created_at <= '2023-12-12

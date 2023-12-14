@@ -9,7 +9,8 @@ export const getUser = () => {
     user = JSON.parse(user);
     return user;
   } else {
-    return null;
+    logout();
+    return {};
   }
 };
 
@@ -19,7 +20,7 @@ export const getPermission = () => {
     permission = JSON.parse(permission);
     return permission;
   } else {
-    return null;
+    return false;
   }
 };
 

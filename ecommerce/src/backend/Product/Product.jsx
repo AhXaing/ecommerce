@@ -11,11 +11,10 @@ import {
   Table,
   Tag,
   Select,
-  message,
   notification,
-  Spin,
+  Checkbox,
 } from "antd";
-import { formatDateClient, isEmptyOrNull } from "../../share/helper";
+import { formatDateClient } from "../../share/helper";
 import MainPageDash from "../../component/backend/MainPageDash";
 const Product = () => {
   const [loading, setLoading] = useState(false);
@@ -23,34 +22,80 @@ const Product = () => {
   const [categoryList, setcategoryList] = useState([]);
   const [productIDEdit, setProductIDEdit] = useState(null);
   const [visible, setVisible] = useState(false);
-  const [txtSearch, setTxtSearch] = useState("");
-  const [categorySearch, setCategorySearch] = useState(null);
+  const [active, setActive] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  // const [txtSearch, setTxtSearch] = useState("");
+  // const [categorySearch, setCategorySearch] = useState(null);
+  // const [productstatus, setProductStatus] = useState(null);
+  // const [page, setPage] = useState(1);
+
+  const [totalRecode, setTotalRecode] = useState(0);
+  const [objSearch, setObjSearch] = useState({
+    page: 1,
+    txtSearch: "",
+    categorySearch: null,
+    productstatus: null,
+  });
+  const { page, txtSearch, categorySearch, productstatus } = objSearch;
+
   const { Option } = Select;
   const [form] = Form.useForm();
   useEffect(() => {
-    getList();
-  }, []);
-  const getList = () => {
+    getList(objSearch);
+  }, [page]);
+
+  const getList = (parameter = {}) => {
     setLoading(true);
-    var params = "?txtSearch=P0011";
-    if (!isEmptyOrNull(categorySearch)) {
-      params += "&categoryId=" + categorySearch;
-    }
+    var params = "?page=" + (parameter.page || 1);
+    params += "&txtSearch=" + (parameter.txtSearch || "");
+    params += "&categoryId=" + parameter.categorySearch;
+    params += "&productstatus=" + parameter.productstatus;
     request("product" + params, "get", {}).then((res) => {
       setTimeout(() => {
         setLoading(false);
-      }, 1000);
+      }, 180);
       if (res) {
         setList(res.list);
+        setTotalRecode(res.totalRecode);
         setcategoryList(res.list_category);
       }
     });
+  };
+  const ClearSearch = () => {
+    var objClear = {
+      ...objSearch,
+      page: 1,
+      txtSearch: "",
+      categorySearch: null,
+      productstatus: null,
+    };
+    setObjSearch({ ...objClear });
+    getList(objClear);
   };
   const onCancelModal = () => {
     setVisible(false);
     setProductIDEdit(null);
     form.resetFields();
   };
+  // const onChange = () => {
+  //   if (ref.current.checked) {
+  //     setActive(true);
+  //   } else if (!ref.target.checked) {
+  //     setActive(false);
+  //   }
+  // };
+  const handleChange = (event) => {
+    if (event.target.checked) {
+      setChecked(event.target.checked);
+      setActive(true);
+      console.log("✅ Checkbox is checked");
+    } else {
+      setActive(false);
+      console.log("⛔️ Checkbox is NOT checked");
+    }
+  };
+
   const onFinish = (item) => {
     if (productIDEdit == null) {
       var param = {
@@ -61,6 +106,7 @@ const Product = () => {
         price: item.price,
         image: item.image,
         description: item.description,
+        is_active: active,
       };
       setLoading(true);
       request("product", "post", param).then((res) => {
@@ -73,7 +119,7 @@ const Product = () => {
           });
           form.resetFields();
           setVisible(false);
-          getList();
+          getList(objSearch);
         }
       });
     } else {
@@ -86,6 +132,7 @@ const Product = () => {
         price: item.price,
         image: item.image,
         description: item.description,
+        is_active: active,
       };
       setLoading(true);
       request("product", "put", paramUpdate).then((res) => {
@@ -98,7 +145,7 @@ const Product = () => {
           });
           form.resetFields();
           setVisible(false);
-          getList();
+          getList(objSearch);
         }
       });
     }
@@ -114,6 +161,7 @@ const Product = () => {
       price: item.price,
       image: item.image,
       description: item.description,
+      is_active: active,
     });
   };
   const onDeleteClick = (item) => {
@@ -124,7 +172,7 @@ const Product = () => {
           description:
             "Product " + item.barcode + " has been updated successfully!",
         });
-        getList();
+        getList(objSearch);
       }
     });
   };
@@ -143,45 +191,91 @@ const Product = () => {
           }}
         >
           <div>
-            <h4>List Products</h4>
-            <Input.Search
-              placeholder="Search"
-              allowClear={true}
-              style={{ width: 250 }}
-              onChange={(event) => {
-                setTxtSearch(event.target.value);
-              }}
-            />
-            <Select
-              // showSearch
-              placeholder="Select Category"
-              allowClear={true}
-              style={{ width: 250 }}
-              onChange={(value) => {
-                setCategorySearch(value);
-              }}
-            >
-              {categoryList?.map((cate, index) => {
-                return (
-                  <Option key={index} value={cate.category_id}>
-                    {cate.name}
-                  </Option>
-                );
-              })}
-            </Select>
-            <Button onClick={() => getList()} type="primary">
-              Search
-            </Button>
+            <div>
+              <h4>List Products</h4>
+              <div style={{ fontSize: 15, padding: 5 }}>
+                Total Rows: {totalRecode} Record
+              </div>
+            </div>
+            <Space>
+              <Input.Search
+                value={txtSearch}
+                placeholder="Search"
+                allowClear={true}
+                style={{ width: 200 }}
+                onChange={(event) => {
+                  setObjSearch({
+                    ...objSearch,
+                    txtSearch: event.target.value,
+                  });
+                }}
+              />
+              <Select
+                // showSearch
+                value={categorySearch}
+                placeholder="Select Category"
+                allowClear={true}
+                style={{ width: 200 }}
+                onChange={(value) => {
+                  setObjSearch({
+                    ...objSearch,
+                    categorySearch: value,
+                  });
+                }}
+              >
+                {categoryList?.map((cate, index) => {
+                  return (
+                    <Option key={index} value={cate.category_id}>
+                      {cate.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+
+              <Select // showSearch
+                value={productstatus}
+                placeholder="Select Staus"
+                allowClear={true}
+                style={{ width: 100 }}
+                onChange={(value) => {
+                  setObjSearch({
+                    ...objSearch,
+                    productstatus: value,
+                  });
+                }}
+              >
+                <Option value={1}>Active</Option>
+                <Option value={0}>Inactive</Option>
+              </Select>
+
+              <Button onClick={() => getList(objSearch)} type="primary">
+                Search
+              </Button>
+              <Button onClick={() => ClearSearch()} type="primary" danger>
+                Clear
+              </Button>
+            </Space>
           </div>
 
           <div>
-            <Button onClick={createNew} type="primary" size="small">
+            <Button onClick={createNew} type="primary">
               Create New
             </Button>
           </div>
         </div>
 
         <Table
+          pagination={{
+            defaultCurrent: 1,
+            total: totalRecode,
+            pageSize: 10,
+            onChange: (page, pageSize) => {
+              setObjSearch({
+                ...objSearch,
+                page: page,
+              });
+            },
+          }}
           size="small"
           columns={[
             {
@@ -361,7 +455,6 @@ const Product = () => {
                 </Form.Item>
               </Col>
             </Row>
-
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item label={"Image"} name={"image"}>
@@ -374,7 +467,22 @@ const Product = () => {
                 </Form.Item>
               </Col>
             </Row>
-
+            {/* <Switch defaultChecked /> */}
+            <Space>
+              <Form.Item
+                valuePropName="checked"
+                name={active}
+                onChange={handleChange}
+              >
+                {checked ? (
+                  <Checkbox checked={true} defaultChecked>
+                    Active
+                  </Checkbox>
+                ) : (
+                  <Checkbox>Active</Checkbox>
+                )}
+              </Form.Item>
+            </Space>
             <Form.Item style={{ textAlign: "right" }}>
               <Space>
                 <Button onClick={onCancelModal} type="primary" danger>
