@@ -25,6 +25,8 @@ require("./src/route/orderStatusRoute")(app, "/api/order-status");
 require("./src/route/cartRoute")(app, "/api/cart");
 require("./src/route/orderRoute")(app, "/api/order");
 require("./src/route/permissionRoute")(app, "/api/permission");
+require("./src/route/roleRoute")(app, "/api/role");
+require("./src/route/provinceRoute")(app, "/api/province");
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");

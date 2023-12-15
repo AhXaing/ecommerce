@@ -2,27 +2,15 @@ const db = require("../util/db");
 const { isEmptyOrNull } = require("../util/validate");
 
 const getPermission = async (req, res) => {
-  const listGroups = await db.query(
-    "SELECT DISTINCT groups FROM tbl_permission"
-  );
-  const listData = await db.query("SELECT name,code FROM tbl_permission");
-  const list = await db.query("SELECT * FROM tbl_permission");
-  var tmpArr = [];
-  var ArrData = [];
+  //const listData = await db.query("SELECT name,code FROM tbl_permission");
+  var sqlPermission = "SELECT * FROM tbl_permission";
+  // "SELECT DISTINCT groups,GROUP_CONCAT(name ORDER BY permission_id DESC) as name ,GROUP_CONCAT(code ORDER BY permission_id) as code FROM tbl_permission GROUP BY groups";
+  const list = await db.query(sqlPermission);
   var tmpList = [];
-  listGroups.map((item, index) => {
-    ArrData.push(item);
-  });
-  listData.map((item, index) => {
-    tmpArr.push(item);
-  });
   list.map((item, index) => {
     tmpList.push(item);
   });
-  //return tmpArr;
   res.json({
-    listGroups: ArrData,
-    listData: tmpArr,
     list: tmpList,
   });
 };
@@ -54,11 +42,17 @@ const create = async (req, res) => {
     list: listPermission,
   });
 };
-const update = (req, res) => {
-  const { name, parent, status, category_id } = req.body;
+const update = async (req, res) => {
+  const { groups, name, code, permission_id } = req.body;
   var message = {};
   if (isEmptyOrNull(name)) {
-    message.name = "category name is required.";
+    message.name = "name is required.";
+  }
+  if (isEmptyOrNull(groups)) {
+    message.groups = "groups is required.";
+  }
+  if (isEmptyOrNull(code)) {
+    message.code = "code is required.";
   }
   if (Object.keys(message).length > 0) {
     res.json({
@@ -68,41 +62,23 @@ const update = (req, res) => {
     return;
   }
   var sql =
-    "UPDATE tbl_category SET name=?, parent=?, status=? WHERE category_id =?";
-  var params_sql = [name, parent, status, category_id];
-  db.query(sql, params_sql, (error, result) => {
-    if (!error) {
-      res.json({
-        message: result.affectedRows
-          ? "Category update successfully."
-          : "Not Data in System.",
-        data: result,
-      });
-    } else {
-      res.json({
-        error: true,
-        message: error,
-      });
-    }
+    "UPDATE tbl_permission SET groups=?, name=?, code=? WHERE permission_id =?";
+  var params_sql = [groups, name, code, permission_id];
+  const list = await db.query(sql, params_sql);
+  res.json({
+    message: "Permission updated successfully.",
+    list: list,
   });
 };
-const remove = (req, res) => {
-  var { id } = req.params;
-  var sql = "DELETE FROM tbl_category WHERE category_id=?";
-  db.query(sql, [id], (error, result) => {
-    if (!error) {
-      res.json({
-        message: result.affectedRows
-          ? "Category deleted successfully."
-          : "Not Data in System",
-        data: result,
-      });
-    } else {
-      res.json({
-        error: true,
-        message: error,
-      });
-    }
+const remove = async (req, res) => {
+  const { id } = req.body;
+  var sql = "DELETE FROM tbl_permission WHERE permission_id=?";
+  const list = await db.query(sql, [id]);
+  res.json({
+    message: list.affectedRows
+      ? "Category deleted successfully."
+      : "Not Data in System",
+    list: list,
   });
 };
 
