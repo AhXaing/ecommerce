@@ -38,6 +38,7 @@ export const isPermission = (code_permission) => {
 
 export const getAccessToken = () => {
   var access_token = localStorage.getItem("access_token");
+  console.log(access_token);
   if (!isEmptyOrNull(access_token)) {
     return access_token;
   } else {

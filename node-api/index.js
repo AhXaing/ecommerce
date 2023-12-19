@@ -27,6 +27,7 @@ require("./src/route/orderRoute")(app, "/api/order");
 require("./src/route/permissionRoute")(app, "/api/permission");
 require("./src/route/roleRoute")(app, "/api/role");
 require("./src/route/provinceRoute")(app, "/api/province");
+require("./src/route/urlRoute")(app, "/api/play.html");
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000.");
